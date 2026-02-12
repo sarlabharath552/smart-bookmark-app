@@ -1,128 +1,164 @@
-📌 Smart Bookmark Manager
+# 🔖 Smart Bookmark Manager
 
-A fullstack real-time bookmark management application built using Next.js (App Router) and Supabase.
+🚀 A fullstack real-time bookmark management application built using **Next.js (App Router)** and **Supabase**.
 
-Live Demo:
-👉 https://smart-bookmark-app-nine.vercel.app
+🌐 **Live Demo:**  
+https://smart-bookmark-app-nine.vercel.app
 
-🚀 Overview
+---
 
-Smart Bookmark Manager allows users to:
+## 📌 Overview
 
-Sign in securely using Google OAuth
+Smart Bookmark Manager allows users to securely save and manage personal bookmarks with real-time updates.
 
-Add personal bookmarks
+Each user:
+- Authenticates via Google OAuth
+- Can add and delete their own bookmarks
+- Sees live updates across multiple browser tabs
+- Cannot access other users’ data (secured with Row Level Security)
 
-Delete bookmarks
+The application is production-ready and deployed on Vercel.
 
-View real-time updates across multiple tabs
+---
 
-Access only their own data using Row Level Security (RLS)
+## 🛠 Tech Stack
 
-The application is fully deployed on Vercel and uses Supabase for authentication, database, and real-time subscriptions.
+### Frontend
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
 
-🛠 Tech Stack
+### Backend & Database
+- Supabase (PostgreSQL)
+- Supabase Auth (Google OAuth)
+- Supabase Realtime (Postgres Changes)
 
-Frontend: Next.js 14 (App Router), TypeScript, Tailwind CSS
+### Deployment
+- Vercel
 
-Backend & DB: Supabase (PostgreSQL)
+---
 
-Authentication: Google OAuth (via Supabase Auth)
+## ✨ Features
 
-Realtime: Supabase Postgres Changes
+- 🔐 Google OAuth Authentication
+- 🗂 Personal bookmark storage
+- ➕ Add bookmarks
+- ❌ Delete bookmarks
+- ⚡ Real-time multi-tab synchronization
+- 🔒 Row Level Security (RLS)
+- 🎨 Clean, responsive UI
+- 🌍 Production deployment
 
-Deployment: Vercel
+---
 
-🔐 Security Architecture
-Row Level Security (RLS)
+## 🔐 Security Architecture
 
-The bookmarks table uses RLS policies to ensure users can:
+### Row Level Security (RLS)
 
-✅ View only their own bookmarks
+The `bookmarks` table uses strict RLS policies to ensure user-level data isolation.
 
-✅ Insert only their own bookmarks
+Policy used:
 
-✅ Delete only their own bookmarks
-
-Policy condition:
-
+```sql
 auth.uid() = user_id
+```
 
+This guarantees:
+- Users can only view their own bookmarks
+- Users can only insert bookmarks for themselves
+- Users can only delete their own bookmarks
 
-This guarantees strict user-level data isolation.
+No shared or exposed data between users.
 
-⚡ Realtime Implementation
+---
 
-The app subscribes to Postgres changes using:
+## ⚡ Realtime Implementation
 
-supabase.channel().on("postgres_changes", ...)
+The application listens to database changes using Supabase's realtime subscription:
 
+```ts
+supabase
+  .channel("bookmarks-channel")
+  .on("postgres_changes", { event: "*", schema: "public", table: "bookmarks" })
+  .subscribe()
+```
 
 This enables:
+- Instant UI updates
+- Cross-tab synchronization
+- Event-driven architecture (no polling)
 
-Instant updates across multiple browser tabs
+To support delete events, the table was configured with:
 
-Real-time UI sync without refresh
-
-Event-driven architecture
-
-To support delete events, the table uses:
-
+```sql
 ALTER TABLE bookmarks REPLICA IDENTITY FULL;
+```
 
+---
 
-This ensures deleted row data is published correctly.
+## 🧠 Key Design Decisions
 
-🌍 Deployment
+- Used Supabase Auth to simplify secure OAuth handling
+- Implemented RLS for production-grade data security
+- Used Postgres realtime instead of polling
+- Structured code for maintainability
+- Added loading states and improved UX for production feel
+- Proper environment variable configuration for secure deployment
 
-The application is deployed on Vercel.
+---
 
-Environment variables configured:
+## 🌍 Deployment
 
+The application is deployed on **Vercel**.
+
+Environment Variables configured:
+
+```
 NEXT_PUBLIC_SUPABASE_URL
-
 NEXT_PUBLIC_SUPABASE_ANON_KEY
+```
 
-OAuth redirect URLs were configured in:
+OAuth redirect URLs configured in:
+- Supabase Auth settings
+- Google Cloud Console
 
-Supabase Auth settings
+---
 
-Google Cloud Console
+## 💻 Local Development
 
-🧠 Key Design Decisions
+Clone the repository:
 
-Used Supabase Auth to simplify secure OAuth handling
-
-Implemented RLS for production-grade data security
-
-Used Postgres realtime instead of polling
-
-Separated client logic cleanly using React state management
-
-Added loading states and UX improvements for production feel
-
-📦 Local Setup
-git clone <repo-url>
+```bash
+git clone <your-repo-url>
 cd smart-bookmark-app
 npm install
 npm run dev
+```
 
+Create a `.env.local` file:
 
-Create .env.local:
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
 
-NEXT_PUBLIC_SUPABASE_URL=your_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+---
 
-✅ Features Summary
+## 📈 Project Highlights
 
-Google OAuth login
+- Full authentication flow implementation
+- Secure multi-user architecture
+- Real-time database sync
+- Production-ready deployment
+- Clean UI and UX improvements
 
-Secure per-user bookmarks
+---
 
-Add / Delete functionality
+## 👩‍💻 Author
 
-Real-time multi-tab sync
+Sarla Bharath Chandra  
+Fullstack & Backend Developer  
+B.Tech CSE (2025)
 
-Clean, responsive UI
-
-Production deployment
+---
+⭐ If you found this project interesting, feel free to explore and provide feedback!
